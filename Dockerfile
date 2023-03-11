@@ -1,6 +1,9 @@
 FROM node:18.15.0
 WORKDIR /app
-COPY . .
+COPY package*.json ./
 RUN npm install
-EXPOSE 3000
-CMD ["npm", "start"]
+COPY . .
+RUN npm run build
+
+# Start the server using the production build
+CMD [ "node", "dist/src/main.js" ]
