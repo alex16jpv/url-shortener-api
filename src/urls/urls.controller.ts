@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { UrlsService } from './urls.service';
 import { CreateUrlDto } from './dto/create-url.dto';
 import { UpdateUrlDto } from './dto/update-url.dto';
@@ -18,8 +28,12 @@ export class UrlsController {
   }
 
   @Get(':code')
-  findOne(@Param('code') code: string) {
-    return this.urlsService.findOne(code);
+  async findOne(@Param('code') code: string) {
+    const foundCode = await this.urlsService.findOne(code);
+    if (!foundCode) {
+      throw new HttpException('Code Not Found', HttpStatus.NOT_FOUND);
+    }
+    return foundCode;
   }
 
   @Patch(':code')
